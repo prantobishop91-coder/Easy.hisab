@@ -1,0 +1,833 @@
+```html
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Easy Hisab - Business Accounting</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f1f5f9;
+    color:#1e293b;
+}
+
+/* Header */
+.header{
+    background:linear-gradient(135deg,#166534,#15803d);
+    color:white;
+    padding:28px 18px;
+    text-align:center;
+}
+
+.logo{
+    font-size:34px;
+    font-weight:bold;
+}
+
+.header p{
+    margin:8px 0 0;
+    opacity:.9;
+}
+
+/* Container */
+.container{
+    max-width:850px;
+    margin:auto;
+    padding:18px;
+}
+
+/* Cards */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 4px 15px rgba(0,0,0,.07);
+}
+
+.card h3{
+    margin:0 0 10px;
+    font-size:15px;
+    color:#64748b;
+}
+
+.card strong{
+    font-size:25px;
+}
+
+.sale{
+    border-top:4px solid #16a34a;
+}
+
+.expense{
+    border-top:4px solid #dc2626;
+}
+
+.profit{
+    border-top:4px solid #2563eb;
+}
+
+.due{
+    border-top:4px solid #d97706;
+}
+
+.sale strong{
+    color:#16a34a;
+}
+
+.expense strong{
+    color:#dc2626;
+}
+
+.profit strong{
+    color:#2563eb;
+}
+
+.due strong{
+    color:#d97706;
+}
+
+/* Sections */
+.section{
+    background:white;
+    padding:22px;
+    border-radius:16px;
+    margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.07);
+}
+
+.section h2{
+    margin-top:0;
+    font-size:21px;
+}
+
+/* Inputs */
+input,select{
+    width:100%;
+    padding:14px;
+    margin:7px 0;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus,select:focus{
+    border-color:#16a34a;
+}
+
+/* Buttons */
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+.add-btn{
+    background:#166534;
+    color:white;
+}
+
+.add-btn:hover{
+    background:#14532d;
+}
+
+.pay-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.clear-btn{
+    background:#dc2626;
+    color:white;
+}
+
+/* Lists */
+.item{
+    background:#f8fafc;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    border-left:5px solid #166534;
+}
+
+.customer{
+    border-left-color:#d97706;
+}
+
+.item strong{
+    font-size:16px;
+}
+
+.amount{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.date{
+    color:#64748b;
+    font-size:13px;
+}
+
+.balance{
+    color:#dc2626;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.empty{
+    text-align:center;
+    color:#64748b;
+    padding:15px;
+}
+
+/* Footer */
+.footer{
+    text-align:center;
+    padding:25px;
+    color:#64748b;
+    font-size:14px;
+}
+
+/* Mobile */
+@media(max-width:600px){
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .card strong{
+        font-size:20px;
+    }
+
+    .logo{
+        font-size:29px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+
+<div class="header">
+
+    <div class="logo">
+        📒 Easy Hisab
+    </div>
+
+    <p>
+        সহজে আপনার ব্যবসার হিসাব রাখুন
+    </p>
+
+</div>
+
+
+<div class="container">
+
+<!-- Dashboard -->
+
+<div class="cards">
+
+    <div class="card sale">
+
+        <h3>💰 মোট বিক্রি</h3>
+
+        <strong>
+            ৳ <span id="totalSale">0</span>
+        </strong>
+
+    </div>
+
+
+    <div class="card expense">
+
+        <h3>💸 মোট খরচ</h3>
+
+        <strong>
+            ৳ <span id="totalExpense">0</span>
+        </strong>
+
+    </div>
+
+
+    <div class="card profit">
+
+        <h3>📈 লাভ</h3>
+
+        <strong>
+            ৳ <span id="totalProfit">0</span>
+        </strong>
+
+    </div>
+
+
+    <div class="card due">
+
+        <h3>👤 মোট বাকি</h3>
+
+        <strong>
+            ৳ <span id="totalDue">0</span>
+        </strong>
+
+    </div>
+
+</div>
+
+
+<!-- New Hisab -->
+
+<div class="section">
+
+    <h2>➕ নতুন হিসাব</h2>
+
+    <select id="type">
+
+        <option value="sale">
+            💰 বিক্রি
+        </option>
+
+        <option value="expense">
+            💸 খরচ
+        </option>
+
+        <option value="due">
+            👤 বাকি
+        </option>
+
+    </select>
+
+
+    <input
+        type="text"
+        id="description"
+        placeholder="বিবরণ লিখুন"
+    >
+
+
+    <input
+        type="number"
+        id="amount"
+        placeholder="টাকার পরিমাণ"
+    >
+
+
+    <button
+        class="add-btn"
+        onclick="addHisab()">
+
+        হিসাব যোগ করুন
+
+    </button>
+
+</div>
+
+
+<!-- Customer -->
+
+<div class="section">
+
+    <h2>👤 কাস্টমারের বাকি</h2>
+
+
+    <input
+        type="text"
+        id="customerName"
+        placeholder="কাস্টমারের নাম"
+    >
+
+
+    <input
+        type="number"
+        id="customerAmount"
+        placeholder="বাকির পরিমাণ"
+    >
+
+
+    <button
+        class="add-btn"
+        onclick="addCustomer()">
+
+        বাকি যোগ করুন
+
+    </button>
+
+</div>
+
+
+<!-- Customers -->
+
+<div class="section">
+
+    <h2>📋 কাস্টমার তালিকা</h2>
+
+    <div id="customerList"></div>
+
+</div>
+
+
+<!-- History -->
+
+<div class="section">
+
+    <h2>📋 হিসাবের History</h2>
+
+    <div id="historyList"></div>
+
+
+    <button
+        class="clear-btn"
+        onclick="clearHistory()">
+
+        🗑️ সব হিসাব মুছে ফেলুন
+
+    </button>
+
+</div>
+
+</div>
+
+
+<!-- Footer -->
+
+<div class="footer">
+
+    © 2026 Easy Hisab  
+    <br>
+    Simple Business Accounting
+
+</div>
+
+
+<script>
+
+let history =
+JSON.parse(localStorage.getItem("easyHisab")) || [];
+
+let customers =
+JSON.parse(localStorage.getItem("easyCustomers")) || [];
+
+
+// Add Hisab
+
+function addHisab(){
+
+    let type =
+    document.getElementById("type").value;
+
+    let description =
+    document.getElementById("description").value.trim();
+
+    let amount =
+    Number(document.getElementById("amount").value);
+
+
+    if(description === "" || amount <= 0){
+
+        alert("দয়া করে সঠিক তথ্য দিন");
+
+        return;
+    }
+
+
+    history.push({
+
+        type:type,
+
+        description:description,
+
+        amount:amount,
+
+        date:new Date().toLocaleDateString("bn-BD")
+
+    });
+
+
+    localStorage.setItem(
+        "easyHisab",
+        JSON.stringify(history)
+    );
+
+
+    document.getElementById("description").value="";
+
+    document.getElementById("amount").value="";
+
+
+    showHistory();
+
+}
+
+
+// Add Customer
+
+function addCustomer(){
+
+    let name =
+    document.getElementById("customerName").value.trim();
+
+    let amount =
+    Number(document.getElementById("customerAmount").value);
+
+
+    if(name === "" || amount <= 0){
+
+        alert("কাস্টমারের নাম ও সঠিক টাকা দিন");
+
+        return;
+    }
+
+
+    customers.push({
+
+        id:Date.now(),
+
+        name:name,
+
+        amount:amount
+
+    });
+
+
+    localStorage.setItem(
+        "easyCustomers",
+        JSON.stringify(customers)
+    );
+
+
+    document.getElementById("customerName").value="";
+
+    document.getElementById("customerAmount").value="";
+
+
+    showCustomers();
+
+    calculateTotal();
+
+}
+
+
+// Show Customers
+
+function showCustomers(){
+
+    let list =
+    document.getElementById("customerList");
+
+    list.innerHTML="";
+
+
+    if(customers.length === 0){
+
+        list.innerHTML =
+        '<div class="empty">এখনো কোনো কাস্টমার নেই</div>';
+
+        return;
+    }
+
+
+    customers.slice().reverse().forEach(function(customer){
+
+        list.innerHTML += `
+
+        <div class="item customer">
+
+            <strong>
+                👤 ${customer.name}
+            </strong>
+
+            <div class="balance">
+                বাকি: ৳ ${customer.amount}
+            </div>
+
+
+            <button
+                class="pay-btn"
+                onclick="payCustomer(${customer.id})">
+
+                💵 টাকা পরিশোধ
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+// Pay Customer
+
+function payCustomer(id){
+
+    let customer =
+    customers.find(function(item){
+
+        return item.id === id;
+
+    });
+
+
+    if(!customer) return;
+
+
+    let payment =
+    Number(
+        prompt(
+            customer.name +
+            " কত টাকা পরিশোধ করেছে?"
+        )
+    );
+
+
+    if(isNaN(payment) || payment <= 0){
+
+        return;
+    }
+
+
+    if(payment > customer.amount){
+
+        alert(
+            "পরিশোধের টাকা বাকি টাকার চেয়ে বেশি হতে পারবে না"
+        );
+
+        return;
+    }
+
+
+    customer.amount -= payment;
+
+
+    if(customer.amount === 0){
+
+        customers =
+        customers.filter(function(item){
+
+            return item.id !== id;
+
+        });
+
+
+        alert(
+            "✅ বাকি সম্পূর্ণ পরিশোধ হয়েছে"
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "easyCustomers",
+        JSON.stringify(customers)
+    );
+
+
+    showCustomers();
+
+    calculateTotal();
+
+}
+
+
+// Show History
+
+function showHistory(){
+
+    let list =
+    document.getElementById("historyList");
+
+    list.innerHTML="";
+
+
+    if(history.length === 0){
+
+        list.innerHTML =
+        '<div class="empty">এখনো কোনো হিসাব নেই</div>';
+
+    }
+
+    else{
+
+        history.slice().reverse().forEach(function(item){
+
+            let title="";
+
+
+            if(item.type === "sale"){
+
+                title="💰 বিক্রি";
+
+            }
+
+
+            if(item.type === "expense"){
+
+                title="💸 খরচ";
+
+            }
+
+
+            if(item.type === "due"){
+
+                title="👤 বাকি";
+
+            }
+
+
+            list.innerHTML += `
+
+            <div class="item">
+
+                <strong>
+                    ${title}
+                </strong>
+
+                <br>
+
+                ${item.description}
+
+                <div class="amount">
+                    ৳ ${item.amount}
+                </div>
+
+                <div class="date">
+                    ${item.date}
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+
+    calculateTotal();
+
+}
+
+
+// Calculate Total
+
+function calculateTotal(){
+
+    let sale=0;
+
+    let expense=0;
+
+    let due=0;
+
+
+    history.forEach(function(item){
+
+        if(item.type === "sale"){
+
+            sale += item.amount;
+
+        }
+
+
+        if(item.type === "expense"){
+
+            expense += item.amount;
+
+        }
+
+
+        if(item.type === "due"){
+
+            due += item.amount;
+
+        }
+
+    });
+
+
+    customers.forEach(function(customer){
+
+        due += customer.amount;
+
+    });
+
+
+    let profit =
+    sale - expense;
+
+
+    document.getElementById("totalSale").innerText =
+    sale;
+
+
+    document.getElementById("totalExpense").innerText =
+    expense;
+
+
+    document.getElementById("totalProfit").innerText =
+    profit;
+
+
+    document.getElementById("totalDue").innerText =
+    due;
+
+}
+
+
+// Clear History
+
+function clearHistory(){
+
+    if(
+        confirm(
+            "আপনি কি সব হিসাব মুছে ফেলতে চান?"
+        )
+    ){
+
+        history=[];
+
+        localStorage.removeItem("easyHisab");
+
+        showHistory();
+
+    }
+
+}
+
+
+// Start
+
+showHistory();
+
+showCustomers();
+
+</script>
+
+</body>
+</html>
+```
